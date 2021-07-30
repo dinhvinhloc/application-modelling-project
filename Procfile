@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -jar target/dependency/webapp-runner.jar --port $PORT target/ite5435-project-1.0.war
+web: java $JAVA_OPTS -jar target/endorsed/webapp-runner.jar --port $PORT target/ite5435-project-1.0.war
