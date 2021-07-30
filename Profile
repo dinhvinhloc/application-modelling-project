@@ -1,0 +1,1 @@
+web: java -war target/ite5435-project-1.0.war
