@@ -16,6 +16,7 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import library.helpers.DBHelper;
+import library.models.LoggedInUser;
 
 /**
  *
@@ -51,7 +52,7 @@ public class UserService {
     }
     
     @WebMethod
-    public String validateUser(String username, String password) {
+    public LoggedInUser validateUser(String username, String password) {
         
         try {
            
@@ -64,13 +65,59 @@ public class UserService {
             Statement stmt = conn.createStatement();
             rs = stmt.executeQuery(queryString);
             while (rs.next()) {
-                return rs.getString("UserRole");
+                LoggedInUser user = new LoggedInUser();
+                user.setUserId(rs.getInt("ID"));
+                user.setUserRole(rs.getString("UserRole"));
+                return user;
             }
             
         } catch (SQLException ex) {
             Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return "";
+        return null;
         
+    }
+    
+    @WebMethod
+    public int reserveBook(int bookId, int userId) {
+        int result = 0;
+        
+        try {
+            DBHelper dBHelper = new DBHelper();
+        
+            Connection conn = dBHelper.createDBConnection();
+            PreparedStatement stmt=conn.prepareStatement("INSERT INTO bsq17ugjkx3188bq.booksrequests VALUES (?, ?, null)");
+            
+            stmt.setInt(1, bookId);
+            stmt.setInt(2, userId);
+            
+            result = stmt.executeUpdate();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return result;   
+    }
+    
+    @WebMethod
+    public int returnBook(int bookId) {
+        int result = 0;
+        
+        try {
+            DBHelper dBHelper = new DBHelper();
+        
+            Connection conn = dBHelper.createDBConnection();
+            PreparedStatement stmt=conn.prepareStatement("DELETE FROM bsq17ugjkx3188bq.booksrequests WHERE BookID = ?");
+            
+            stmt.setInt(1, bookId);
+            
+            result = stmt.executeUpdate();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return result;   
     }
 }
