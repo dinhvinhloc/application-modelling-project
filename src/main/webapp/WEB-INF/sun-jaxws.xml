@@ -21,7 +21,6 @@
         <url-pattern>/UserService</url-pattern>
     </servlet-mapping>
     
-    
     <session-config>
         <session-timeout>
             30
