@@ -10,12 +10,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import library.helpers.DBHelper;
+import library.models.Book;
+import library.models.BookRequest;
 import library.models.LoggedInUser;
 
 /**
@@ -30,9 +34,7 @@ public class UserService {
         int result = 0;
         
         try {
-            DBHelper dBHelper = new DBHelper();
-        
-            Connection conn = dBHelper.createDBConnection();
+            Connection conn = DBHelper.createDBConnection();
             PreparedStatement stmt=conn.prepareStatement("insert into users values(null,?,?,?,?,?)");
             
             stmt.setString(1, usernameString);
@@ -42,6 +44,7 @@ public class UserService {
             stmt.setString(5, createdDateString);
             
             result = stmt.executeUpdate();
+            conn.close();
             
         } catch (SQLException ex) {
             Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, ex);
@@ -56,9 +59,7 @@ public class UserService {
         
         try {
            
-            DBHelper dBHelper = new DBHelper();
-        
-            Connection conn = dBHelper.createDBConnection();
+            Connection conn = DBHelper.createDBConnection();
             
             ResultSet rs = null;
             String queryString = "Select * from users where Username = '" + username + "' and Password = '"+password+"';";
@@ -70,7 +71,7 @@ public class UserService {
                 user.setUserRole(rs.getString("UserRole"));
                 return user;
             }
-            
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -83,16 +84,14 @@ public class UserService {
         int result = 0;
         
         try {
-            DBHelper dBHelper = new DBHelper();
-        
-            Connection conn = dBHelper.createDBConnection();
+            Connection conn = DBHelper.createDBConnection();
             PreparedStatement stmt=conn.prepareStatement("INSERT INTO bsq17ugjkx3188bq.booksrequests VALUES (?, ?, null)");
             
             stmt.setInt(1, bookId);
             stmt.setInt(2, userId);
             
             result = stmt.executeUpdate();
-            
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -105,19 +104,40 @@ public class UserService {
         int result = 0;
         
         try {
-            DBHelper dBHelper = new DBHelper();
-        
-            Connection conn = dBHelper.createDBConnection();
+            Connection conn = DBHelper.createDBConnection();
             PreparedStatement stmt=conn.prepareStatement("DELETE FROM bsq17ugjkx3188bq.booksrequests WHERE BookID = ?");
             
             stmt.setInt(1, bookId);
             
             result = stmt.executeUpdate();
-            
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         return result;   
+    }
+    
+    @WebMethod
+    public List<BookRequest> getRequestedBooks() {
+
+        List<BookRequest> bookRequests = new ArrayList<>();
+
+        try {
+            Connection conn = DBHelper.createDBConnection();
+            ResultSet rs = null;
+            String queryString = "Select * from booksrequests";
+            Statement stmt = conn.createStatement();
+            rs = stmt.executeQuery(queryString);
+            while (rs.next()) {
+                BookRequest br = new BookRequest(rs.getInt("BookID"), rs.getInt("UserID"), rs.getString("RequestDate"));
+
+                bookRequests.add(br);
+            }
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Book.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return bookRequests;
     }
 }

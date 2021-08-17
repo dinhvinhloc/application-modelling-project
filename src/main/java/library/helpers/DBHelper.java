@@ -15,12 +15,12 @@ import java.util.logging.Logger;
  *
  * @author dinhloc
  */
-public class DBHelper {
+public final class DBHelper {
 
     public DBHelper() {
     }
 
-    public Connection createDBConnection() throws SQLException {
+    public static Connection createDBConnection() throws SQLException {
         Connection conn = null;
         try {
             String dbURL, dbUsername, dbPassword;

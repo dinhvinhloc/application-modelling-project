@@ -19,6 +19,7 @@ import javax.jws.WebService;
 import library.helpers.DBHelper;
 import library.models.Book;
 import library.models.BookFullInfo;
+import library.models.BookRequest;
 
 /**
  *
@@ -32,9 +33,7 @@ public class BookService {
         List<Book> books = new ArrayList<>();
 
         try {
-            DBHelper dBHelper = new DBHelper();
-
-            Connection conn = dBHelper.createDBConnection();
+            Connection conn = DBHelper.createDBConnection();
             ResultSet rs = null;
             String queryString = "Select * from books";
             Statement stmt = conn.createStatement();
@@ -44,20 +43,20 @@ public class BookService {
 
                 books.add(b);
             }
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Book.class.getName()).log(Level.SEVERE, null, ex);
         }
         return books;
     }
 
+    
     public List<BookFullInfo> getBooksFullInfo() {
 
         List<BookFullInfo> books = new ArrayList<>();
 
         try {
-            DBHelper dBHelper = new DBHelper();
-
-            Connection conn = dBHelper.createDBConnection();
+            Connection conn = DBHelper.createDBConnection();
             ResultSet rs = null;
             String queryString = "select * from books b join publishers p on b.PublisherID = p.PublisherID join authors a on b.AuthorID = a.AuthorID;";
             Statement stmt = conn.createStatement();
@@ -67,6 +66,7 @@ public class BookService {
 
                 books.add(b);
             }
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(BookFullInfo.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -77,8 +77,7 @@ public class BookService {
 
         try {
 
-            DBHelper dBHelper = new DBHelper();
-            Connection conn = dBHelper.createDBConnection();
+            Connection conn = DBHelper.createDBConnection();
 
             PreparedStatement stmt = conn.prepareStatement("insert into books values(null,?,?,?,?,?,?)");
 
@@ -90,6 +89,7 @@ public class BookService {
             stmt.setInt(6, pages);
 
             stmt.executeUpdate();
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(BookFullInfo.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -100,8 +100,7 @@ public class BookService {
 
         try {
 
-            DBHelper dBHelper = new DBHelper();
-            Connection conn = dBHelper.createDBConnection();
+            Connection conn = DBHelper.createDBConnection();
 
             PreparedStatement stmt = conn.prepareStatement("update books set ISBN = ?, Title = ?, PublishedDate = ?, PublisherID = ?, AuthorID=?, Pages = ? where ID = ?");
 
@@ -114,6 +113,7 @@ public class BookService {
             stmt.setInt(7, ID);
 
             stmt.executeUpdate();
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(BookFullInfo.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -125,14 +125,14 @@ public class BookService {
 
         try {
 
-            DBHelper dBHelper = new DBHelper();
-            Connection conn = dBHelper.createDBConnection();
+            Connection conn = DBHelper.createDBConnection();
 
             PreparedStatement stmt = conn.prepareStatement("delete from books where ID =?");
 
             stmt.setInt(1, ID);
 
             stmt.executeUpdate();
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(BookFullInfo.class.getName()).log(Level.SEVERE, null, ex);
         }

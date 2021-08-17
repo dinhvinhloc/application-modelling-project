@@ -33,9 +33,7 @@ public class PublisherService {
         List<Publisher> publishers = new ArrayList<>();
 
         try {
-            DBHelper dBHelper = new DBHelper();
-
-            Connection conn = dBHelper.createDBConnection();
+            Connection conn = DBHelper.createDBConnection();
             ResultSet rs = null;
             String queryString = "Select * from publishers";
             Statement stmt = conn.createStatement();
@@ -44,6 +42,7 @@ public class PublisherService {
                 Publisher p = new Publisher(rs.getInt("PublisherID"), rs.getString("PublisherName"));
                 publishers.add(p);
             }
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Publisher.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -54,13 +53,13 @@ public class PublisherService {
 
         try {
 
-            DBHelper dBHelper = new DBHelper();
-            Connection conn = dBHelper.createDBConnection();
+            Connection conn = DBHelper.createDBConnection();
 
             PreparedStatement stmt = conn.prepareStatement("insert into publishers values(null,?)");
 
             stmt.setString(1, publisherNameString);
             stmt.executeUpdate();
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Publisher.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -71,8 +70,7 @@ public class PublisherService {
 
         try {
 
-            DBHelper dBHelper = new DBHelper();
-            Connection conn = dBHelper.createDBConnection();
+            Connection conn = DBHelper.createDBConnection();
 
             PreparedStatement stmt = conn.prepareStatement("update publishers set PublisherName = ? where PublisherID = ?;");
 
@@ -80,6 +78,7 @@ public class PublisherService {
             stmt.setInt(2, publisherID);
 
             stmt.executeUpdate();
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Publisher.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -90,14 +89,13 @@ public class PublisherService {
 
         try {
 
-            DBHelper dBHelper = new DBHelper();
-            Connection conn = dBHelper.createDBConnection();
-
+            Connection conn = DBHelper.createDBConnection();
             PreparedStatement stmt = conn.prepareStatement("delete from publishers where PublisherID =?");
 
             stmt.setInt(1, ID);
 
             stmt.executeUpdate();
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Publisher.class.getName()).log(Level.SEVERE, null, ex);
         }

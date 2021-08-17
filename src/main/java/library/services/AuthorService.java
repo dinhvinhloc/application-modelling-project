@@ -29,11 +29,10 @@ public class AuthorService {
     public List<Author> getAuthors() {
 
         List<Author> authors = new ArrayList<>();
+        
 
         try {
-            DBHelper dBHelper = new DBHelper();
-
-            Connection conn = dBHelper.createDBConnection();
+            Connection conn = DBHelper.createDBConnection();
             ResultSet rs = null;
             String queryString = "Select * from authors";
             Statement stmt = conn.createStatement();
@@ -42,6 +41,8 @@ public class AuthorService {
                 Author a = new Author(rs.getInt("AuthorID"), rs.getString("AuthorName"));
                 authors.add(a);
             }
+            
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Author.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -52,13 +53,13 @@ public class AuthorService {
 
         try {
 
-            DBHelper dBHelper = new DBHelper();
-            Connection conn = dBHelper.createDBConnection();
+            Connection conn = DBHelper.createDBConnection();
 
             PreparedStatement stmt = conn.prepareStatement("insert into authors values(null,?)");
 
             stmt.setString(1, authorNameString);
             stmt.executeUpdate();
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Author.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -69,8 +70,7 @@ public class AuthorService {
 
         try {
 
-            DBHelper dBHelper = new DBHelper();
-            Connection conn = dBHelper.createDBConnection();
+            Connection conn = DBHelper.createDBConnection();
 
             PreparedStatement stmt = conn.prepareStatement("update authors set AuthorName = ? where AuthorId = ?;");
 
@@ -78,6 +78,7 @@ public class AuthorService {
             stmt.setInt(2, authorID);
 
             stmt.executeUpdate();
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Author.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -88,14 +89,14 @@ public class AuthorService {
 
         try {
 
-            DBHelper dBHelper = new DBHelper();
-            Connection conn = dBHelper.createDBConnection();
+            Connection conn = DBHelper.createDBConnection();
 
             PreparedStatement stmt = conn.prepareStatement("delete from authors where AuthorID =?");
 
             stmt.setInt(1, ID);
 
             stmt.executeUpdate();
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Author.class.getName()).log(Level.SEVERE, null, ex);
         }
