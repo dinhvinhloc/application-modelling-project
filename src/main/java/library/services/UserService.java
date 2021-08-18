@@ -18,6 +18,7 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import library.helpers.DBHelper;
+import library.helpers.Email;
 import library.models.Book;
 import library.models.BookRequest;
 import library.models.LoggedInUser;
@@ -45,6 +46,17 @@ public class UserService {
             
             result = stmt.executeUpdate();
             conn.close();
+            
+            String from = "humberlibmanagement@gmail.com";
+            String subject = "Account Registration successful!";
+            
+            String message = "Dear "+ usernameString
+                             + "\n\nYour account has been registered successfully"
+                             + "\n\n Regards"
+                             + "\nHumber College Library";
+            
+            
+            Email.sendEmail(from, emailString, subject, message);
             
         } catch (SQLException ex) {
             Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, ex);
